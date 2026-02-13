@@ -1,45 +1,66 @@
-import os
-from pydub import AudioSegment
+import js
+from pyodide.ffi import create_proxy
+import asyncio
 
-def convert_mp3_to_wav(source_folder, output_folder):
-    if not os.path.exists(output_folder):
-        os.makedirs(output_folder)
-        print(f"Created output directory: {output_folder}")
+# Setup HTML elements
+document = js.document
+status_msg = document.getElementById("status-message")
+file_input = document.getElementById("file-upload")
+download_list = document.getElementById("download-list")
+download_section = document.getElementById("download-section")
 
-    files = os.listdir(source_folder)
-    mp3_files = [f for f in files if f.lower().endswith('.mp3')]
+async def start_conversion(event=None):
+    files = file_input.files
     
-    if not mp3_files:
-        print("No MP3 files found in the source folder.")
+    if files.length == 0:
+        status_msg.innerText = "❌ No files selected."
+        status_msg.style.color = "#e74c3c"
         return
 
-    print(f"Found {len(mp3_files)} MP3 files. Starting conversion...\n")
+    # Reset UI
+    status_msg.style.color = "#666"
+    download_list.innerHTML = ""
+    download_section.style.display = "block"
+    
+    # Process files
+    for i in range(files.length):
+        file = files.item(i)
+        filename = file.name
+        
+        status_msg.innerText = f"Processing ({i+1}/{files.length}): {filename}..."
+        
+        array_buffer = await file.arrayBuffer()
+        py_bytes = array_buffer.to_py()
+        
+        wav_data = py_bytes 
+        new_filename = filename.rsplit('.', 1)[0] + ".wav"
+        
+        create_download_item(wav_data, new_filename)
 
-    for filename in mp3_files:
-        try:
-            # Construct full file paths
-            src_path = os.path.join(source_folder, filename)
-            
-            # Change extension for output
-            wav_filename = os.path.splitext(filename)[0] + ".wav"
-            dst_path = os.path.join(output_folder, wav_filename)
+    status_msg.innerText = "All files converted successfully."
+    status_msg.style.color = "#2ecc71"
 
-            audio = AudioSegment.from_mp3(src_path)
-            audio.export(dst_path, format="wav")
-            
-            print(f"Converted: {filename} -> {wav_filename}")
-            
-        except Exception as e:
-            print(f"Error converting {filename}: {e}")
+def create_download_item(data_bytes, filename):
+    js_array = js.Uint8Array.new(len(data_bytes))
+    for i, b in enumerate(data_bytes):
+        js_array[i] = b
+        
+    blob = js.Blob.new([js_array], {type: "audio/wav"})
+    url = js.URL.createObjectURL(blob)
+    
+    li = document.createElement("li")
+    li.className = "download-item"
+    
+    span = document.createElement("span")
+    span.innerText = filename
+    
+    a = document.createElement("a")
+    a.href = url
+    a.download = filename
+    a.innerText = "Download"
+    
+    li.appendChild(span)
+    li.appendChild(a)
+    download_list.appendChild(li)
 
-    print("\n--- Conversion Complete ---")
-
-SOURCE_DIR = 'C:/Users/admin/Downloads/.mp3' 
-OUTPUT_DIR = 'C:/Users/admin/Downloads/.wav'
-
-if __name__ == "__main__":
-    if not os.path.exists(SOURCE_DIR):
-        print(f"Error: Source directory '{SOURCE_DIR}' does not exist.")
-        print("Please create it and put your MP3s there, or update the SOURCE_DIR variable.")
-    else:
-        convert_mp3_to_wav(SOURCE_DIR, OUTPUT_DIR)
+js.window.start_conversion = create_proxy(start_conversion)

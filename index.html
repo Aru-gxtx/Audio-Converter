@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MP3 to WAV Converter</title>
+    
+    <link rel="stylesheet" href="https://pyscript.net/releases/2024.1.1/core.css">
+    <script type="module" src="https://pyscript.net/releases/2024.1.1/core.js"></script>
+    
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+    <h1>MP3 to WAV Converter</h1>
+    
+    <div class="controls-wrapper">
+        
+        <div class="control-column">
+            <label for="file-upload">1. Select Files</label>
+            <input type="file" id="file-upload" accept=".mp3" multiple>
+        </div>
+    
+        <div class="control-column">
+            <label>2. Convert</label>
+            
+            <button id="convert-btn" class="run-button">Start Conversion</button>
+            
+            <p id="status-message" class="status-text">Ready</p>
+        </div>
+
+    </div>
+    
+    <div id="download-section" class="download-section">
+        <h3 style="margin-top:0;">Converted Files</h3>
+        <ul id="download-list" class="download-list"></ul>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const btn = document.getElementById('convert-btn');
+            const msg = document.getElementById('status-message');
+
+            btn.addEventListener('click', () => {
+                if(window.start_conversion) {
+                    msg.innerText = "Initializing...";
+                    window.start_conversion();
+                } else {
+                    msg.innerText = "Python is loading...";
+                }
+            });
+        });
+    </script>
+
+    <script type="py" src="./main.py" config="./pyscript.json"></script>
+</body>
+</html>
