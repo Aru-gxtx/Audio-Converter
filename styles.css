@@ -3,7 +3,7 @@
 :root {
     --primary-color: #4a90e2;
     --primary-hover: #357abd;
-    --bg-color: #ffff6f;    /* Reference yellow */
+    --bg-color: #ffff6f;    
     --card-bg: #ffffff;
     --text-color: #333;
     --border-color: #ddd;
@@ -28,6 +28,7 @@ h1 {
     letter-spacing: -0.5px;
 }
 
+/* --- Controls Container --- */
 .controls-wrapper {
     display: flex;
     gap: 30px;
@@ -58,6 +59,13 @@ label {
     font-size: 1.1em;
 }
 
+.helper-text {
+    font-size: 0.85rem;
+    color: #888;
+    margin-top: 5px;
+}
+
+/* --- Inputs --- */
 input[type="file"] {
     width: 100%;
     padding: 12px;
@@ -73,6 +81,25 @@ input[type="file"]:focus {
     outline: none;
 }
 
+/* --- NEW Dropdown Styling --- */
+.format-dropdown {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    box-sizing: border-box;
+    font-size: 14px;
+    background: #fafafa;
+    margin-bottom: 15px;
+    cursor: pointer;
+}
+
+.format-dropdown:focus {
+    border-color: var(--primary-color);
+    outline: none;
+}
+
+/* --- Buttons --- */
 .run-button {
     background-color: var(--primary-color);
     color: white;
@@ -90,6 +117,7 @@ input[type="file"]:focus {
     background-color: var(--primary-hover);
 }
 
+/* --- Status Text --- */
 .status-text {
     margin-top: 15px;
     font-size: 0.95rem;
@@ -98,6 +126,7 @@ input[type="file"]:focus {
     min-height: 1.2em; 
 }
 
+/* --- Download List --- */
 .download-section {
     width: 100%;
     max-width: 800px;

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MP3 to WAV Converter</title>
+    <title>Audio Converter</title>
     
     <link rel="stylesheet" href="https://pyscript.net/releases/2024.1.1/core.css">
     <script type="module" src="https://pyscript.net/releases/2024.1.1/core.js"></script>
@@ -12,18 +12,31 @@
 </head>
 <body>
 
-    <h1>MP3 to WAV Converter</h1>
+    <h1>Universal Audio Converter</h1>
     
     <div class="controls-wrapper">
         
         <div class="control-column">
             <label for="file-upload">1. Select Files</label>
-            <input type="file" id="file-upload" accept=".mp3" multiple>
+            <input type="file" id="file-upload" 
+                   accept=".aac,.aif,.aiff,.flac,.m4a,.mp3,.ogg,.opus,.wav,.wma" 
+                   multiple>
+            <p class="helper-text">Supports: MP3, WAV, FLAC, OGG, M4A, etc.</p>
         </div>
     
         <div class="control-column">
-            <label>2. Convert</label>
+            <label for="format-select">2. Target Format</label>
             
+            <select id="format-select" class="format-dropdown">
+                <option value="mp3">MP3</option>
+                <option value="wav" selected>WAV</option>
+                <option value="ogg">OGG</option>
+                <option value="flac">FLAC</option>
+                <option value="aac">AAC</option>
+                <option value="m4a">M4A</option>
+                <option value="wma">WMA</option>
+            </select>
+
             <button id="convert-btn" class="run-button">Start Conversion</button>
             
             <p id="status-message" class="status-text">Ready</p>
@@ -46,7 +59,7 @@
                     msg.innerText = "Initializing...";
                     window.start_conversion();
                 } else {
-                    msg.innerText = "Python is loading...";
+                    msg.innerText = "⚠️ Python is loading...";
                 }
             });
         });
